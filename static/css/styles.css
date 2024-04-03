@@ -1,0 +1,43 @@
+/* Defining color variables */
+:root {
+  --base-color: #F5F5F5;
+  --main-accent: #334C9A;
+  --alt-accent: #93AADB;
+  --vivid-accent: #E9312C;
+}
+
+body {
+  background-color: var(--base-color);
+  color: var(--main-accent); /* Default text color */
+}
+
+a, .btn-main {
+  background-color: var(--main-accent);
+  color: white; /* Ensuring legibility */
+}
+
+a:hover, .btn-main:hover {
+  background-color: var(--alt-accent);
+}
+
+.btn-vivid {
+  background-color: var(--vivid-accent);
+  color: white;
+}
+
+.navbar-brand {
+  background-color: transparent !important; /* Overrides any other background color */
+}
+/* Adjusting navbar link styles */
+.navbar-nav .nav-link {
+  background-color: transparent !important; /* Makes navbar buttons transparent */
+  color: var(--main-accent) !important; /* Applies your main accent color to the text */
+}
+
+/* Optional: Change hover/focus colors */
+.navbar-nav .nav-link:hover, .navbar-nav .nav-link:focus {
+  color: var(--alt-accent) !important; /* Change as needed */
+}
+
+
+/* Additional styling here */
