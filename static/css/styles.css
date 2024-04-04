@@ -28,16 +28,30 @@ a:hover, .btn-main:hover {
 .navbar-brand {
   background-color: transparent !important; /* Overrides any other background color */
 }
-/* Adjusting navbar link styles */
+
+/* Adjust navbar link styles */
 .navbar-nav .nav-link {
-  background-color: transparent !important; /* Makes navbar buttons transparent */
-  color: var(--main-accent) !important; /* Applies your main accent color to the text */
+  color: var(--main-accent) !important; /* Apply main accent color to the text */
+  background-color: transparent !important; /* Make navbar buttons transparent */
+  border: none !important; /* Remove borders */
+  padding: 0.5rem 1rem !important; /* Adjust padding */
 }
 
 /* Optional: Change hover/focus colors */
-.navbar-nav .nav-link:hover, .navbar-nav .nav-link:focus {
-  color: var(--alt-accent) !important; /* Change as needed */
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link:focus,
+.navbar .dropdown-menu .dropdown-item:hover,
+.navbar .dropdown-menu .dropdown-item:focus {
+  color: var(--alt-accent) !important; /* Change text color on hover/focus */
 }
 
+/* Adjust dropdown menu styles */
+.navbar .dropdown-menu {
+  border: none; /* Remove border */
+}
 
-/* Additional styling here */
+/* Adjust dropdown item styles */
+.navbar .dropdown-menu .dropdown-item {
+  color: var(--main-accent) !important; /* Apply main accent color to the text */
+  padding: 0.5rem 1rem !important; /* Adjust padding */
+}
