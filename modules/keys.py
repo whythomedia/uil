@@ -1,0 +1,2 @@
+SECRET_KEY = "\x8a\xf9\xda?6\x0eQ\xb1\x95/7\xed\xb6\xce\xdac"
+ADMIN_PASSWORD = "allowance"
