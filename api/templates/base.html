@@ -18,11 +18,19 @@
           <link rel="icon" href="{{ url_for('static', filename='images/icons/favicon.ico') }}" type="image/x-icon">
           <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='images/icons/apple-touch-icon.png') }}">
           <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/icons/favicon-32x32.png') }}">
-          <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='images/icons/favicon-16x16.png') }}">
+          <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='images/icons/favicon-16x16.png') }}">          
           <link rel="manifest" href="{{ url_for('static', filename='images/icons/site.webmanifest') }}">
           <link rel="mask-icon" href="{{ url_for('static', filename='images/icons/safari-pinned-tab.svg') }}" color="#5bbad5">
           <meta name="msapplication-TileColor" content="#da532c">
           <meta name="theme-color" content="#f5f5f5">
+
+            <!-- Open Graph data -->
+            <meta property="og:title" content="Academic Competition Manager" />
+            <meta property="og:type" content="website" />
+            <meta property="og:url" content="https://uil-one.vercel.app/" />
+            <meta property="og:image" content="{{ url_for('static', filename='images/icons/Twitter_Card.png') }}" />
+            <meta property="og:description" content="The best way to manage a high level academic competiton." />
+            <meta property="og:site_name" content="Academic Competition Manager" />
 
         <title>Academic Challenge</title>
         {% endblock %}
