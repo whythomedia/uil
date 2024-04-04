@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block styles %}
+{{ super() }} <!-- This includes CSS from base.html -->
+<style>
+  .editable-cell {
+    background-color: var(--alt-accent);
+    /* Use base color for background */
+    cursor: text;
+    /* Text cursor on hover */
+  }
+
+  .editable-cell:focus {
+    background-color: #fff;
+    /* White background for focus */
+    outline: 2px solid var(--main-accent);
+    /* Main accent color for outline */
+  }
+</style>
+{% endblock %}
+
+
+{% block content %}
+<div class="container mt-4">
+  <form id="scoresForm">
+    <table class="table table-hover">
+      <thead class="thead-light">
+        <tr>
+          <th scope="col">Student</th>
+          <th scope="col">Score</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for student in students %}
+        <tr>
+          <td>{{ student.name }}</td>
+          <!-- Use 'data-uuid' to comply with HTML5 data-* attribute naming -->
+          <td contenteditable="true" data-uuid="{{ student.uuid }}" class="editable-cell"></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <button type="button" class="btn btn-primary" onclick="submitScores()" id="score-submit">Submit</button>
+  </form>
+
+</div>
+{% endblock %}
+{% block scripts %}
+{{ super() }} <!-- This includes JS from base.html -->
+
+<script>
+  async function submitScores() {
+    //hide the submit button
+    document.getElementById('score-submit').style.display = 'none';
+
+    let scores = [];
+    const cells = document.querySelectorAll('td[contenteditable="true"]');
+    // change cells to contenteditable="false"
+    cells.forEach(cell => {
+      cell.setAttribute('contenteditable', 'false');
+      cell.classList.remove('editable-cell');
+    });
+
+    cells.forEach(cell => {
+      const studentId = cell.getAttribute('data-uuid');
+      const score = cell.innerText.trim();
+
+      if (score) { // Only add if there's a score
+        scores.push({ studentId, score });
+      }
+    });
+
+    // Post the scores array to your backend
+    try {
+      const response = await fetch('/submit-scores', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(scores),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log(data); // Handle the response data as needed
+      displayAlert('success', 'Scores submitted successfully.');
+    } catch (error) {
+      console.error('Error submitting scores:', error);
+      displayAlert('danger', 'Failed to submit scores.');
+    }
+  }
+
+  function displayAlert(type, message) {
+    const existingAlert = document.getElementById('alert-message');
+    const alertDiv = document.createElement('div');
+    // Set alert class based on type (e.g., 'success' or 'danger')
+    alertDiv.className = `alert alert-${type}`;
+    alertDiv.textContent = message;
+    existingAlert.appendChild(alertDiv);
+  }
+</script>
+{% endblock %}

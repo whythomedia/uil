@@ -1,12 +1,14 @@
-from flask import Flask, render_template, redirect, request, url_for, flash, session
+from flask import Flask, render_template, redirect, request, url_for, flash, session, jsonify
 from flask_bootstrap import Bootstrap4
 import modules.keys as keys
 from modules.forms import RegistrationForm, LoginForm
 from supabase import create_client, Client
+import json
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = keys.SECRET_KEY
 HARDCODED_PASSWORD = keys.ADMIN_PASSWORD
+
 
 Bootstrap4(app)
 
@@ -34,7 +36,7 @@ def about():
 
 @app.route('/students')
 def students():
-    data = supabase.table("Student").select("*").execute()
+    data = supabase.table("student").select("*").execute()
     all_students = data.data  # Extract data
     return render_template('students.html', students=all_students)
 
@@ -42,7 +44,7 @@ def students():
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        response = supabase.table("Student").insert({
+        response = supabase.table("student").insert({
             "name": form.name.data,
             "grade": form.grade.data,
             "registration_code": form.registration_code.data
@@ -55,6 +57,29 @@ def register():
             flash('Registration successful!', 'success')
         return redirect(url_for('register'))
     return render_template('register.html', form=form)
+
+@app.route('/scoring')
+def scoring():
+    data = supabase.table("student").select("*").execute()
+    students = data.data
+    return render_template('scoring.html', students=students)
+
+@app.route('/submit-scores', methods=['POST'])
+def submit_scores():
+    if not request.json:
+        return jsonify({"error": "No data provided"}), 400
+
+    scores = request.json
+    scores_json = json.dumps(scores)
+    user_email = session.get('email', "unknown user")
+    try:
+        result = supabase.table("scoring").insert({
+            "scores": scores_json, 
+            "administrator": user_email
+        }).execute()
+        return jsonify({"status": "success", "details": str(result)}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -77,7 +102,6 @@ def login():
             for err in errorMessages:
                 flash(f'{fieldName}: {err}', 'danger')
     return render_template('login.html', title='Login', form=form)
-
 
 @app.route('/logout')
 def logout():
