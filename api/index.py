@@ -98,8 +98,27 @@ def competitions():
         for detail in competition['competition_details']:
             # Assuming detail['start_time'] is a string like '15:00:00'
             detail['start_time'] = datetime.strptime(detail['start_time'], '%H:%M:%S').strftime('%H:%M')
-
     return render_template('competitions.html', competitions=competitions_data)
+
+@app.route('/update-competition-details', methods=['POST'])
+def update_competition_details():
+    # Extract data from POST request
+    data = request.json
+    competition_id = data.get('id')
+    field = data.get('field')
+    new_value = data.get('newValue')
+    print(data)
+    # Basic validation
+    if not competition_id or not field or new_value is None:
+        return jsonify({'error': 'Missing data for update'}), 400
+    try:
+        updated_rows = supabase.table('competition_details').update({field: new_value}).eq('detail_id', competition_id).execute()
+        if updated_rows.error:
+            return jsonify({'error': updated_rows.error.message}), 500
+        return jsonify({'message': 'Update successful'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 
 
 @app.route('/login', methods=['GET', 'POST'])
