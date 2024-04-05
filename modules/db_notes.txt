@@ -1,0 +1,34 @@
+-- Create Competitions Table
+CREATE TABLE competitions (
+    competition_id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    date DATE NOT NULL
+);
+
+-- Create CompetitionDetails Table
+CREATE TABLE competition_details (
+    detail_id SERIAL PRIMARY KEY,
+    competition_id INT NOT NULL,
+    grade VARCHAR(50) NOT NULL,
+    start_time TIME NOT NULL,
+    room VARCHAR(255),
+    FOREIGN KEY (competition_id) REFERENCES competitions(competition_id)
+);
+
+-- Create Scoring Table
+CREATE TABLE scoring (
+    id BIGINT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
+    scores JSONB,
+    administrator TEXT
+);
+
+-- Create Student Table
+CREATE TABLE student (
+    id BIGINT NOT NULL,
+    name TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
+    grade TEXT,
+    registration_code TEXT,
+    uuid UUID DEFAULT gen_random_uuid()
+);

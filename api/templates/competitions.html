@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+  /* Apply CSS directly within the template for simplicity */
+  table {
+    border-collapse: collapse; /* Collapse borders */
+  }
+  th, td {
+    border-right: 1px solid black; /* Add vertical line to the right of each cell */
+    padding: 8px; /* Optional: Adds padding inside cells for better readability */
+  }
+  th:last-child, td:last-child {
+    border-right: none; /* Remove border from the last column's right edge */
+  }
+</style>
+
+<h1>Competitions</h1>
+<!-- competitions.html -->
+<table>
+  <thead>
+    <tr>
+      <th rowspan="2">Contest</th>
+      <th rowspan="2">Date</th>
+      <th colspan="4">Start Time</th>
+      <th colspan="4">Room</th>
+    </tr>
+    <tr>
+      <th>5th</th>
+      <th>6th</th>
+      <th>7th</th>
+      <th>8th</th>
+      <th>5th</th>
+      <th>6th</th>
+      <th>7th</th>
+      <th>8th</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for competition in competitions %}
+    <tr>
+      <td>{{ competition['name'] }}</td>
+      <td>{{ competition['date'] }}</td>
+      {% for grade in ["5th", "6th", "7th", "8th"] %}
+        {% set detail = (competition['competition_details'] | selectattr('grade', 'equalto', grade) | list) %}
+        {% if detail %}
+          {% set detail = detail[0] %}
+          <td tabindex="0" data-bs-toggle="popover" data-bs-trigger="focus" title="{{ competition['name'] }}" data-content="Start Time: {{ detail['start_time'] }}, Room: {{ detail['room'] }}">{{ detail['start_time'] }}</td>
+        {% else %}
+          <td></td> <!-- Placeholder for start time if no detail exists for this grade -->
+        {% endif %}
+      {% endfor %}
+
+      {% for grade in ["5th", "6th", "7th", "8th"] %}
+      {% set detail = (competition['competition_details'] | selectattr('grade', 'equalto', grade) | list) %}
+      {% if detail %}
+        {% set detail = detail[0] %}
+        <td tabindex="0" data-bs-toggle="popover" data-bs-trigger="focus" title="{{ competition['name'] }}" data-content="Start Time: {{ detail['start_time'] }}, Room: {{ detail['room'] }}">{{ detail['room'] }}</td>
+        {% else %}
+        <td></td> <!-- Placeholder for room if no detail exists for this grade -->
+      {% endif %}
+    {% endfor %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+  var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+  var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+    return new bootstrap.Popover(popoverTriggerEl)
+  });
+});
+</script>
+
+{% endblock %}

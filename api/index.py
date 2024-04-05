@@ -80,6 +80,27 @@ def submit_scores():
         return jsonify({"status": "success", "details": str(result)}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+@app.route('/competitions')
+def competitions():
+    try:
+        data = supabase.table("competitions")\
+                    .select("competition_id, name, date, competition_details( detail_id, grade, start_time, room)")\
+                    .order("competition_id", desc=False)\
+                    .execute()
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    competitions_data = data.data
+    from datetime import datetime
+
+    # Example of adjusting the time format before sending it to the template
+    for competition in competitions_data:
+        for detail in competition['competition_details']:
+            # Assuming detail['start_time'] is a string like '15:00:00'
+            detail['start_time'] = datetime.strptime(detail['start_time'], '%H:%M:%S').strftime('%H:%M')
+
+    return render_template('competitions.html', competitions=competitions_data)
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
